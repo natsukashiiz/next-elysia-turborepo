@@ -21,11 +21,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { ButtonLoading } from "@/components/button-loading";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { wait } from "@/lib/utils";
 
 const formSchema = z.object({
   name: z.string().min(2),
@@ -33,7 +34,6 @@ const formSchema = z.object({
 });
 
 export default function LoginPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   const [loading, setLoading] = useState(false);
@@ -49,13 +49,14 @@ export default function LoginPage() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await wait(1000);
       const res = await signIn("credentials", {
         redirect: false,
         name: values.name,
         password: values.password,
       });
 
+      setLoading(false);
       if (res?.error) {
         toast.error("Name or Password is incorrect");
         return;
@@ -63,12 +64,11 @@ export default function LoginPage() {
 
       toast.success("Signed in successfully");
 
-      // TODO: fix router sometime not working
+      await wait(700);
       const callbackUrl = searchParams.get("callbackUrl") || "/";
-      router.push(callbackUrl);
+      window.location.href = callbackUrl;
     } catch (error) {
       console.log(error);
-    } finally {
       setLoading(false);
     }
   };

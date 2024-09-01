@@ -1,5 +1,5 @@
 import { Suspense, lazy } from "react";
-
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -10,12 +10,12 @@ import {
 } from "@/components/ui/card";
 
 import { HelloSomethingSkeleton } from "@/components/hello-something";
-import Profile from "@/components/profile";
+import { ProfileSkeleton } from "@/components/profile";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 
 const HelloSomething = lazy(() => import("@/components/hello-something"));
 const Count = lazy(() => import("@/components/count"));
+const Profile = lazy(() => import("@/components/profile"));
 
 export default function Home() {
   return (
@@ -40,7 +40,9 @@ export default function Home() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-2">
-            <Profile />
+            <Suspense fallback={<ProfileSkeleton />}>
+              <Profile />
+            </Suspense>
             <hr />
             <Button className="w-full" variant={"secondary"} asChild>
               <Link href="/protected">Go to protected page</Link>

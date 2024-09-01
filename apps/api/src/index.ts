@@ -8,6 +8,7 @@ const app = new Elysia()
     jwt({
       name: "jwt",
       secret: process.env.JWT_SECRET!,
+      exp: "1m",
     })
   )
   .get("/", () => "Hello Elysia :)")

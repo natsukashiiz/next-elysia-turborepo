@@ -3,13 +3,14 @@
 import { signOut } from "next-auth/react";
 import { useState } from "react";
 import { ButtonLoading } from "@/components/button-loading";
+import { wait } from "@/lib/utils";
 
 const LogoutButton = () => {
   const [loading, setLoading] = useState(false);
 
   const handleLogout = async () => {
     setLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await wait(1000);
     await signOut({ callbackUrl: "/login" });
     setLoading(false);
   };

@@ -9,7 +9,6 @@ export const authOptions: NextAuthOptions = {
   },
   providers: [
     CredentialsProvider({
-      name: "Credentials",
       credentials: {
         name: { label: "Name", type: "text", placeholder: "Name" },
         password: {
@@ -35,9 +34,12 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
 
+          const { user, token } = data.result;
+
           return {
-            id: data.result.user.id.toString(),
-            name: data.result.user.name,
+            id: user.id,
+            name: user.name,
+            token,
           };
         }
 
@@ -47,11 +49,12 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async session({ session, token }) {
+      session.user.id = token.id as number;
       return {
         ...session,
+        token: token.token,
         user: {
           ...session.user,
-          token: token,
         },
       };
     },
@@ -59,8 +62,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         return {
           ...token,
-          id: user.id,
-          name: user.name,
+          ...user,
         };
       }
 

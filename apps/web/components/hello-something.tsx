@@ -1,12 +1,13 @@
 import { api } from "@repo/libs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { wait } from "@/lib/utils";
 
 export const HelloSomethingSkeleton = () => {
   return <Skeleton className="h-10 w-full" />;
 };
 
 const HelloSomething = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  await wait(1000);
   const { data, error } = await api.hello({ name: "Next.js" }).get();
 
   if (error) {
